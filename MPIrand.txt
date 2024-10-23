@@ -1,0 +1,46 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <mpi.h> 
+ 
+#define ARRAY_SIZE 1000 
+ 
+ 
+int main(int argc, char *argv[]) { 
+ int rank, size; 
+ int local_array[ARRAY_SIZE / 2]; 
+int global_sum = 0, local_sum = 0; 
+ double global_average = 0.0, local_average = 0.0; 
+ 
+ MPI_Init(&argc, &argv); 
+ MPI_Comm_rank(MPI_COMM_WORLD, &rank); 
+ MPI_Comm_size(MPI_COMM_WORLD, &size); 
+ 
+ // Seed random number generator differently on each process 
+srand(rank); 
+ 
+ // Generate local random numbers for 
+(int i = 0; i < ARRAY_SIZE / 2; i++) { 
+ local_array[i] = rand() % 1000; // Random numbers between 0 and 999 
+local_sum += local_array[i]; 
+ }
+MPI_Reduce(&local_sum, &global_sum, 1, MPI_INT, MPI_SUM, 0, 
+MPI_COMM_WORLD); 
+ 
+ // Calculate global average 
+if (rank == 0) { 
+ global_average = (double)global_sum / ARRAY_SIZE; 
+ } 
+ 
+ // Broadcast global average to all processes 
+ MPI_Bcast(&global_average, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD); 
+ 
+ 
+ // Print sum and average only from the root process 
+if (rank == 0) { 
+ printf("Global sum: %d\n", global_sum); 
+ printf("Global average: %.2f\n", global_average); 
+ } 
+ 
+ MPI_Finalize(); 
+ return 0; 
+}

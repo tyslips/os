@@ -1,0 +1,95 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+ 
+#define MAX_REQUESTS 1000 
+ 
+// Function to sort disk requests in ascending 
+order 
+void sort_requests(int requests[], int 
+num_requests) { int i, j, temp; for (i = 0; i < 
+num_requests - 1; i++) 
+{ for (j = 0; j < num_requests - i - 
+1; j++) { 
+ if (requests[j] > requests[j + 1]) 
+{ temp = requests[j]; 
+requests[j] = requests[j + 1]; 
+ requests[j + 1] = temp; 
+ } 
+ 
+ } 
+ } 
+} 
+ 
+// Function to simulate SCAN disk scheduling 
+algorithm 
+void scan(int requests[], int num_requests, int start, 
+char direction) 
+{ int total_head_movements = 0; 
+int current_head_position = start; 
+ int index; 
+ 
+ // Sort requests 
+sort_requests(requests, num_requests); 
+ 
+ // Find the index where current head position 
+would fit 
+ for (index = 0; index < 
+num_requests; index++) { 
+if (requests[index] >= 
+current_head_position) { 
+break; 
+ } 
+ } 
+ 
+ // If direction is left, reverse the 
+sorted requests if (direction == 'L') { 
+ 
+ for (int i = 0, j = num_requests - 1; 
+i < j; i++, j--) { int temp = 
+requests[i]; requests[i] = 
+requests[j]; requests[j] = temp; 
+ } 
+ } 
+ 
+ // Scan towards lower track for (int 
+i = index; i < num_requests; i++) { 
+printf("%d ", requests[i]); 
+ total_head_movements += abs(requests[i] - 
+current_head_position); 
+ current_head_position = requests[i]; 
+ } 
+ 
+ // If direction is left and there are 
+requests to the left of current head 
+position if (direction == 'L' && index 
+> 0) { 
+ printf("%d ", 0); 
+ total_head_movements += 
+current_head_position; 
+current_head_position = 0; 
+for (int i = index - 1; i >= 0; i--) { 
+printf("%d ", requests[i]); 
+total_head_movements += 
+abs(requests[i] - 
+current_head_position); 
+ current_head_position = 
+requests[i]; 
+ } 
+ } 
+ 
+ printf("\nTotal head movements: %d\n", 
+total_head_movements); 
+} 
+ 
+int main() { 
+ int 
+requests[MAX_REQUESTS]; 
+int num_requests, start; char 
+direction; 
+ 
+ // Input total number of disk blocks, 
+disk request string, and current head 
+position 
+ printf("Enter the total number of disk 
+blocks: "); 
+ scanf("%d", &num_requests

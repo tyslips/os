@@ -1,0 +1,26 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+ 
+void fcfs(int disk[], int n, int start) { 
+int head_movements = 0; 
+printf("Order of service: ");
+printf("%d ", start); // Start head position 
+ 
+ // Iterate through disk requests 
+for (int i = 0; i < n; i++) { 
+ printf("%d ", disk[i]); // Print the request being serviced 
+head_movements += abs(disk[i] - start); // Calculate head movements 
+start = disk[i]; // Move head to the current request 
+ } 
+ 
+ printf("\nTotal number of head movements: %d\n", head_movements); } 
+ 
+int main() { 
+ int disk[] = {65, 95, 30, 91, 18, 116, 142, 44, 
+168}; int n = sizeof(disk) / sizeof(disk[0]); int 
+start_head_position = 52; 
+ 
+ printf("Order of service: "); 
+ fcfs(disk, n, start_head_position); 
+ 
+ return 0; }
